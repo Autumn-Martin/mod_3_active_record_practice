@@ -32,7 +32,7 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Hang Tough" do
-    xit "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
+    it "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
       diamond  = User.create(name: "Diamond")
       turbo    = User.create(name: "Turbo")
       laser    = User.create(name: "Laser")
@@ -45,9 +45,11 @@ describe "ActiveRecord American Gladiator" do
 
 
       order_amounts = []
-
       # Changeable Start
-      users = User.first(3)
+      # This code executes 1 (to find 3 users) + 3 (one per each user load the orders) queries:
+      # users = User.first(3)
+      # This code executes 1 (to find 3 users) + 1 (to get the orders for each users 1-3 all at once)
+      users = User.includes(:orders).first(3)
       # Changeable End
 
       # Use eager loading to remove the N+1 query
