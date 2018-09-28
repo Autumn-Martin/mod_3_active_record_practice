@@ -9,6 +9,7 @@ describe "ActiveRecord American Gladiator" do
 
       # Changeable Start
       items = Item.unscoped.all
+      #unscoped removes default scope
       # Changeable End
 
       expect(items.count).to eq 3
@@ -16,13 +17,14 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Powerball" do
-    xit "returns all items containing Powerball" do
+    it "returns all items containing Powerball" do
       Item.create(name: "Powerball Ball")
       Item.create(name: "Powerball Goal")
       Item.create(name: "Trap Door")
-
       # Changeable Start
-      items = Item.all
+      items = Item.where("name like ?", "%Powerball%")
+      # SQL LIKE operator is used within WHERE clause to search for a pattern in a column
+      # % before & after represents that 0-multiple characters can come before/after
       # Changeable End
 
       expect(items.count).to eq(2)
