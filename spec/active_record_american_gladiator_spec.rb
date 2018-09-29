@@ -163,13 +163,26 @@ describe "ActiveRecord American Gladiator" do
       # most_popular_items = top_item_ids.map do |id|
       #   Item.find(id)
       # end
-
       most_popular_items =
         Item.select('items.*, count(items.id) AS items_count')
              .joins(:orders)
              .group('items.id')
              .order('items_count DESC')
              .limit(2)
+      # Another way:
+      most_popular_items =
+        Item.select('items.*, count(order_items.item_id) AS items_count')
+            .joins(:order_items)
+            .group('items.id')
+            .order('items_count DESC')
+            .take(2)
+        # take vs limit:
+          # - to use limit, you need a Relation & you get a Relation
+          # - limit let's you chain more onto it since it returns a Relation
+          # - ex: Item.limit.whree...
+
+          # - for take, you can either use a Relation or an Array & you get an Array
+          # - use take to return an array & not worry about the source object
       # Changeable Stop
 
       # Hints: http://apidock.com/rails/ActiveRecord/QueryMethods/select
